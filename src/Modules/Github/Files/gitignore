@@ -1,0 +1,3 @@
+# exclude bin / relase files
+bin/*
+!bin/.gitkeep

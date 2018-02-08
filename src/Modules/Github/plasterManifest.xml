@@ -1,0 +1,134 @@
+<?xml version='1.0' encoding='utf-8'?>
+<plasterManifest schemaVersion='1.1' templateType='Project'
+  xmlns='http://www.microsoft.com/schemas/PowerShell/Plaster/v1'>
+  <metadata>
+    <name>PS_Module_GitHub</name>
+    <id>a6b166ac-decc-412b-b461-d2b4a748f517</id>
+    <version>0.0.1</version>
+    <title>PowerShell Module (Existing Github Repository)</title>
+    <description>Plaster template for a PowerShell module for GitHub hosted repository.</description>
+    <author>OCram85</author>
+    <tags>Github, AppVeyor, Pester, Coverage</tags>
+  </metadata>
+  <parameters>
+    <parameter name='ModuleName' type='text' prompt='Enter the name of the module' />
+    <parameter name='ModuleDesc' type='text' prompt='Enter a brief description of your module' />
+    <parameter name='ModuleCompany' type='text' prompt='Company' default='Unknown' />
+    <parameter name='ModuleAuthor' type='user-fullname' prompt='Author' />
+    <parameter name='ModuleEmail' type='user-email' prompt='Email' />
+    <parameter name='ModuleVersion' type='text' prompt='Version Number' default='0.0.0.9999' />
+    <parameter name='MinVer' type='text' prompt='Required minimum PowerShell version' default='4.0' />
+    <parameter name='License' type='choice' default='0' store='text' prompt='Select a license for your module'>
+      <choice label='&amp;MIT' help='Adds an MIT license file.' value='MIT'/>
+      <choice label='&amp;Apache 2.0' help='Adds an Apache license file.' value='Apache'/>
+      <choice label='&amp;GNU GPLv3' help='Adds an GNU GPLv3 license file.' value='GNU'/>
+      <choice label='&amp;Custom' help='Adds an empty file you need to edit' value='Custom'/>
+      <choice label='&amp;None' help='No license specified.' value='None'/>
+    </parameter>
+    <parameter name='GithubLink' type='choice' default='0' store='text' prompt='Do you want to link your module details onto your Github account'>
+      <choice label='&amp;ModuleAuthor' help='Use the already given ModuleAuthor to create the link' value='ModuleAuthor'/>
+      <choice label='&amp;GithubAccount' help='Specify an alternate Github account name.' value='GithubAccount'/>
+      <choice label='&amp;No' help='There will no values added into those fields. You have to edit them by yourself.' value='No'/>
+    </parameter>
+    <parameter name='GithubAccount' type='text' prompt='Github Account Name' condition='$PLASTER_PARAM_GithubLink -match "GithubAccount"'/>
+    <parameter name='Options' type='multichoice' default='0,1,2,3,4,5' store='text' prompt='Select desired options'>
+      <choice label='&amp;Lint support with PSScriptAnalyzer' help='Adds lint tests in build pipeline.' value='Lint'/>
+      <choice label='&amp;Pester test support' help='Adds Tests directory and a starter Pester Tests file.' value='Unit'/>
+      <choice label='&amp;Git' help='Adds a .gitignore file.' value='Git'/>
+      <choice label='&amp;Track empty directories' help='Adds .gitkeep files in empty directories.' value='TrackEmpty'/>
+      <choice label='&amp;Readme' help='Adds basic Readme file with basic structure, meta data and badges' value='Readme'/>
+      <choice label='&amp;Coverage' help='Enable Coverage analysis with Coveralls.io and PSCoverage' value='Coverage'/>
+      <choice label='&amp;None' help='No options specified.' value='None'/>
+    </parameter>
+    <parameter name='BuildEngine' type='choice' default='0' store='text' prompt='Select your build engine you want to use'>
+      <choice label='&amp;AppVeyor' help='Adds the AppVeyor YML file and internal tools' value='AppVeyor'/>
+      <choice label='&amp;psake' help='Creates psake build script build.ps1 for manual builds.' value='psake'/>
+    </parameter>
+    <parameter name='AppVeyorID' type='text' prompt='AppVeyor project ID' condition='$PLASTER_PARAM_BuildEngine -match "AppVeyor"'/>
+    <parameter name='Deployment' type='multichoice' default='0,1' store='text' prompt='Select your automated deployment targets'>
+      <choice label='&amp;Github' help='Publish build artifacts to Github' value='Github' />
+      <choice label='&amp;PSGallery' help='Publish build artifacts to the PowerShellGallery repo' value='PSGallery'/>
+    </parameter>
+    <parameter name='NuGetToken' type='text' prompt='AppVeyor encrypted PSGallery token' condition='$PLASTER_PARAM_BuildEngine -match "AppVeyor" -and $PLASTER_PARAM_Deployment -match "PsGallery"'/>
+    <parameter name='GitHubToken' type='text' prompt='AppVeyor encrypted GitHub token' condition='$PLASTER_PARAM_BuildEngine -match "AppVeyor" -and $PLASTER_PARAM_Deployment -match "Github"'/>
+    <parameter name='CoverallsToken' type='text' prompt='AppVeyor encrypted Coveralls.io token' condition='$PLASTER_PARAM_BuildEngine -match "AppVeyor" -and $PLASTER_PARAM_Options -match "Coverage"'/>
+    <parameter name='OptionalDirs' type='multichoice' default='0,1,2,3' store='text' prompt='Select optional sub directories'>
+      <choice label='&amp;VSCode' help='Adds VSCode subdir with settings, tasks, cSpell and launch config' value='VSCode'/>
+      <choice label='&amp;docs' help='Adds docs subdir for markdown cmdlet documentation' value='Docs'/>
+      <choice label='&amp;resources' help='Adds resoucres subir for additional resources' value='Resources'/>
+      <choice label='&amp;assets' help='Adds assets subdir for addional assets.' value='Assets' />
+    </parameter>
+  </parameters>
+  <content>
+    <message>
+-----------------------------------------------------------
+________          __         .__.__
+\______ \   _____/  |______  |__|  |   ______
+ |    |  \_/ __ \   __\__  \ |  |  |  /  ___/
+ |    ``   \  ___/|  |  / __ \|  |  |__\___ \
+/_______  /\___  >__| (____  /__|____/____  >
+        \/     \/          \/             \/
+
+Used template: PowerShell Module (for existing Github Repository).
+Limitation:
+  - The given destination path from Invoke-Plaster has to exist
+  - The parameter value ModuleName has to match the -DestinationPath parameter.
+
+Example:
+  Invoke-Plaster -TemplatePath '.\src\Modules\Github' -DestinationPath 'C:\Temp\Foobar'
+  ...
+  Enter the name of the module: Foobar
+
+Usage:
+  - Create a new git repo in your workspace named like your desired module name. Or clone an empty repo into your
+    workspace.
+
+  - Optional: Create your AppVeyor Project and encrypt the folling data:
+    - PSGallery NuGet token -> Needed for PSGallery deployment
+    - Github Access token -> Needed for deploying on GitHub Releases
+  - Optional:
+  - Optional: Create your Coveralls.io Project and encrypt the folling data via AppVeypr:
+    - dataCoveralls.io token -> Needed for uploading your coverage results.
+  - Invoke-Plaster with the DestinationPath you've just created.
+  - Fill in the parameter values and watch the Plaster magic...
+
+-----------------------------------------------------------
+    </message>
+    <message>    Creating the folder structure based on your selected options    </message>
+    <file source='' destination='src'/>
+    <file source='' destination='src\Private'/>
+    <file source='' destination='bin'/>
+    <file source='' destination='tests' condition='$PLASTER_PARAM_Options -match "Unit"'/>
+    <file source='' destination='tools' condition='$PLASTER_PARAM_BuildEngine -match "AppVeyor"'/>
+    <file source='' destination='.vscode' condition='$PLASTER_PARAM_OptionalDirs -match "VSCode"'/>
+    <file source='' destination='docs' condition='$PLASTER_PARAM_OptionalDirs -match "Docs"'/>
+    <file source='' destination='resources' condition='$PLASTER_PARAM_OptionalDirs -match "Resources"'/>
+    <file source='' destination='assets' condition='$PLASTER_PARAM_OptionalDirs -match "Assets"'/>
+    <templateFile source='TemplateFiles\Readme.tpl.md' destination='README.md' condition='$PLASTER_PARAM_Options -match "Readme"'/>
+    <message>    Creating PowerShell module files    </message>
+    <templateFile source='TemplateFiles\ModuleManifest.tpl.psd1' destination='src\${PLASTER_PARAM_ModuleName}.psd1'/>
+    <file source='Files\ModuleScript.psm1' destination='src\${PLASTER_PARAM_ModuleName}.psm1'/>
+    <message>    Creating LICENSE file    </message>
+    <templateFile source='License\MIT.tpl' destination='LICENSE' condition='${PLASTER_PARAM_License} -match "MIT"'/>
+    <templateFile source='License\Apache.tpl' destination='LICENSE' condition='${PLASTER_PARAM_License} -match "Apache"'/>
+    <templateFile source='License\GNU.tpl' destination='LICENSE' condition='${PLASTER_PARAM_License} -match "GNU"'/>
+    <file source='' destination='LICENSE' condition='${PLASTER_PARAM_License} -match "Custom"' openInEditor='true' />
+    <message>    Creating git related files    </message>
+    <file source='Files\gitkeep' destination='bin\.gitkeep' condition='$PLASTER_PARAM_Options -match "TrackEmpty"'/>
+    <file source='Files\gitkeep' destination='assets\.gitkeep' condition='$PLASTER_PARAM_OptionalDirs -match "Assets" -and $PLASTER_PARAM_Options -match "TrackEmpty"'/>
+    <file source='Files\gitkeep' destination='resources\.gitkeep' condition='$PLASTER_PARAM_OptionalDirs -match "Resources" -and $PLASTER_PARAM_Options -match "TrackEmpty"'/>
+    <file source='Files\gitkeep' destination='docs\.gitkeep' condition='$PLASTER_PARAM_OptionalDirs -match "Docs" -and $PLASTER_PARAM_Options -match "TrackEmpty"'/>
+    <file source='Files\gitkeep' destination='tests\.gitkeep' condition='$PLASTER_PARAM_OptionalDirs -match "Unit" -and $PLASTER_PARAM_Options -match "TrackEmpty"'/>
+    <file source='Files\gitignore' destination='.gitignore' condition='$PLASTER_PARAM_Options -match "Git"'/>
+    <message condition='$PLASTER_PARAM_OptionalDirs -match "VSCode"'>    Setting up VSCode Editor files    </message>
+    <file source='Files\vscode\launch.json' destination='.vscode\launch.json' condition='$PLASTER_PARAM_OptionalDirs -match "VSCode"'/>
+    <file source='Files\vscode\settings.json' destination='.vscode\settings.json' condition='$PLASTER_PARAM_OptionalDirs -match "VSCode"'/>
+    <templateFile source='TemplateFiles\vscode\tasks.tpl.json' destination='.vscode\tasks.json' condition='$PLASTER_PARAM_OptionalDirs -match "VSCode"'/>
+    <message condition='$PLASTER_PARAM_Options -match "Unit"'>    Setting up Pester    </message>
+    <file source='Files\Pester\Readme.md' destination='tests\Readme.md' condition='$PLASTER_PARAM_Options -match "Unit"'/>
+    <templateFile source='TemplateFiles\Pester\Test-ModuleManifest.tpl.Tests.ps1' destination='tests\00_BasicTests.Tests.ps1' condition='$PLASTER_PARAM_Options -match "Unit"'/>
+    <message condition='$PLASTER_PARAM_BuildEngine -match "AppVeyor"'>    Setting up selected build engine AppVeyor    </message>
+    <templateFile source='TemplateFiles\AppVeyor\AppVeyor.tpl.psm1' destination='tools\AppVeyor.psm1' condition='$PLASTER_PARAM_BuildEngine -match "AppVeyor"'/>
+    <templateFile source='TemplateFiles\AppVeyor\appveyor.tpl.yml' destination='appveyor.yml' condition='$PLASTER_PARAM_BuildEngine -match "AppVeyor"'/>
+  </content>
+</plasterManifest>

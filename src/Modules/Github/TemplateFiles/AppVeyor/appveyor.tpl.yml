@@ -1,0 +1,83 @@
+# define your PowerShell module version here.
+# best practie is the semantic versioning syntax.
+# The build number will be repaced by AppVeyor itself.
+# The complete version string is used as module version itself.
+version: 0.2.0.{build}
+
+branches:
+  only:
+    - master
+    - dev
+    - debug
+
+skip_tags: true
+
+#image: WMF 5
+# Test ne build image:
+image: Visual Studio 2017
+
+# Install pester module and init the Appveyor support.
+install:
+  - ps: Import-Module .\tools\AppVeyor.psm1
+  - ps: Invoke-InstallDependencies -Verbose
+
+environment:
+<%
+  if ($PLASTER_PARAM_Deployment -match "PSGallery") {
+"  NuGetToken:"
+"    secure: {0}" -f $PLASTER_PARAM_NuGetToken
+  }
+%>
+<%
+  if ($PLASTER_PARAM_Options -match "Coverage") {
+"  CoverallsToken:"
+"    secure: {0}" -f $PLASTER_PARAM_CoverallsToken
+  }
+%>
+
+build: false
+
+before_build:
+  - ps: Invoke-AppVeyorBumpVersion
+
+build_script:
+  - ps: Invoke-AppVeyorBuild
+
+<%
+  if (($PLASTER_PARAM_Options -match "Unit") -or ($PLASTER_PARAM_Options -match "Coverage")) {
+"test_script:"
+  }
+  if ($PLASTER_PARAM_Options -match "Unit") {
+"  - ps: Invoke-AppVeyorTests"
+  }
+  if ($PLASTER_PARAM_Options -match "Coverage") {
+"  - ps: Invoke-CoverageReport"
+  }
+%>
+
+<%
+"deploy:"
+"  #- provider: GitHub"
+"  #  auth_token:"
+"  #    secure: "
+"  #  artifact: <Build_Artifact_Name>.zip           # upload all NuGet packages to release assets"
+"  #  draft: true"
+"  #  prerelease: true"
+"  #  on:"
+"  #    branch: dev"
+"  - provider: GitHub"
+"    auth_token:"
+"      secure: {0}" -f $PLASTER_PARAM_GitHubToken
+"    artifact: {0}.zip     # upload all NuGet packages to release assets" -f $PLASTER_PARAM_ModuleName
+"    draft: false"
+"    prerelease: false"
+"    on:"
+"      branch: master                    # build release on master branch changes"
+%>
+
+<%
+  if ($PLASTER_PARAM_Deployment -match "PSGallery") {
+"after_deploy:"
+"  - ps: Invoke-AppVeyorPSGallery -OnBranch 'master'"
+  }
+%>
