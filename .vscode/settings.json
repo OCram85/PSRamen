@@ -7,7 +7,7 @@
     "files.insertFinalNewline": true,
     // Formation and editor options
     "editor.renderWhitespace": "boundary",
-    "editor.formatOnSave": true,
+    "editor.formatOnSave": false,
     "editor.formatOnType": true,
     "editor.rulers": [
         116
@@ -48,11 +48,18 @@
         "yml"
     ],
     "cSpell.words": [
+        "Appveyor",
+        "Callsign",
+        "Cmdlet",
         "GUID",
         "NTFS",
         "Phabricator",
         "Prerelease",
+        "REPO",
         "Ramen",
+        "Veyor",
+        "notmatch",
+        "testresults",
         "wildcards"
     ]
 }

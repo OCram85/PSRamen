@@ -6,11 +6,18 @@
     "language": "en",
     // words - list of words to be always considered correct
     "words": [
+        "Appveyor",
+        "Callsign",
+        "Cmdlet",
         "GUID",
+        "notmatch",
         "NTFS",
         "Phabricator",
         "Prerelease",
         "Ramen",
+        "REPO",
+        "testresults",
+        "Veyor",
         "wildcards"
     ],
     // flagWords - list of words to be always considered incorrect
