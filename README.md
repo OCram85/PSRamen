@@ -7,21 +7,19 @@
 ![forthebadge](http://forthebadge.com/images/badges/built-with-love.svg)
 ![forthebadge](http://forthebadge.com/images/badges/for-you.svg)
 
-General
-=======
+# About
 
-Installation
-============
+> PSRamen is a collection of Plaster templates. It's purpose is to keep all important templates for modules and other items in one single place.
+# Installation
 
-PowerShellGallery.com (Recommended Way)
----------------------------------------
+## PowerShellGallery.com (Recommended Way)
+
 
 * Make sure you use PowerShell 5.0 or higher with `$PSVersionTable`.
 * Use the builtin PackageManagement and install with: `Import-Module PowerShellGet; Install-Module PSRamen`.
 * Done. Start exploring the Plaster templates with `Import-Module Plaster; Get-PlasterTemplate -IncludeInstalledModules`.
 
-Manual Way
-----------
+## Manual Way
 
 * Take a look at the [Latest Release](https://github.com/OCram85/PSRamen/releases/latest) page.
 * Download the `PSRamen.zip`.
@@ -29,5 +27,12 @@ Manual Way
   * Don't forget to change the NTFS permission flag in the context menu.
 * Done. Start exploring the Plaster templates with `Import-Module Plaster; Get-PlasterTemplate -IncludeInstalledModules`.
 
-Quick Start
------------
+# Templates
+
+## Modules
+
+| Name | Title | Description |
+| --- | --- | --- |
+| PS_Module_GitHub | PowerShell Module (Existing Github Repository) | Contains a standard Module layout for a Github hosted repository. Includes AppVeyor, Coveralls.io, and Pester tests.|
+
+
