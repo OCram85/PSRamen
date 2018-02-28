@@ -44,7 +44,6 @@
       <choice label='&amp;AppVeyor' help='Adds the AppVeyor YML file and internal tools' value='AppVeyor'/>
       <choice label='&amp;psake' help='Creates psake build script build.ps1 for manual builds.' value='psake'/>
     </parameter>
-    <parameter name='AppVeyorID' type='text' prompt='AppVeyor project ID' condition='$PLASTER_PARAM_BuildEngine -match "AppVeyor"'/>
     <parameter name='Deployment' type='multichoice' default='0,1' store='text' prompt='Select your automated deployment targets'>
       <choice label='&amp;Github' help='Publish build artifacts to Github' value='Github' />
       <choice label='&amp;PSGallery' help='Publish build artifacts to the PowerShellGallery repo' value='PSGallery'/>

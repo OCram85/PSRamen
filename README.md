@@ -33,6 +33,4 @@
 
 | Name | Title | Description |
 | --- | --- | --- |
-| PS_Module_GitHub | PowerShell Module (Existing Github Repository) | Contains a standard Module layout for a Github hosted repository. Includes AppVeyor, Coveralls.io, and Pester tests.|
-
-
+| `PS_Module_GitHub` | [PowerShell Module](docs/PS_Module_Github.md) | Contains a standard Module layout for a Github hosted repository. Includes AppVeyor, Coveralls.io, and Pester tests.|
